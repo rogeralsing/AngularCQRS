@@ -162,21 +162,28 @@
     <div class="container" ng-controller="xx">
     	<h1>AngularJS - CQRS Experiment</h1>
 
-        <div ng-repeat="order in orders">
-        	<h2>Order: {{order.Id}} <button ng-click="deleteOrder(order)" class="btn btn-danger">-</button></h2> 
-        	<h3>Header</h3>
+        <div ng-repeat="order in orders" class="panel panel-info">
 
+        	<div class="panel-heading">Order: {{order.Id}} <button ng-click="deleteOrder(order)" class="btn btn-danger">-</button></div>
+
+			<div class="panel-body">
+
+			<form class="form-horizontal" role="form">
 			<div class="form-group">
-    			<label for="contactInput">Contact:</label>
-            	<input id="contactInput" class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+    			<label class="col-sm-2 control-label" for="contactInput">Contact:</label>
+    			<div class="col-sm-5">
+            		<input id="contactInput" class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+            	</div>
             </div>
 
 			<div class="form-group">
-				<label for="deliveryAddressInput">Delivery Address:</label>
-            	<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
+				<label class="col-sm-2 control-label" for="deliveryAddressInput">Delivery Address:</label>
+				<div class="col-sm-5">
+            		<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
+            	</div>
             </div>
-
-			<h3>Details</h3>
+            </form>
+			</div>
 			<table class="table table-condensed table-bordered">
 			<tr>
 			<th>ProductId
@@ -200,6 +207,7 @@
 	            	</td>
             	</tr>
             </table>
+            
         </div>
         <hr />
 
