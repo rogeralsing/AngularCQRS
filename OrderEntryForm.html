@@ -165,28 +165,29 @@
         	<h2>Order: {{order.Id}}</h2>
         	<h3>Header</h3>
 
-            Contact: <input type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
-            DeliveryAddress: <input type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
+            Contact: <input class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+            DeliveryAddress: <input class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
             <button ng-click="deleteOrder(order)" class="btn btn-primary">Delete order</button>
 
 			<h3>Details</h3>
-			<table class="">
+			<table class="table table-condensed table-striped">
 			<tr>
 			<th>ProductId
 			</th>
 			<th>Quantity
 			</th>
+			<th></th>
 			</tr>
             	<tr ng-repeat="detail in order.details">
                  	<td>{{detail.productId}}</td>
-                 	<td><input type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/></td>
+                 	<td><input class="form-control input-sm" type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/></td>
                 	<td><button ng-click="deleteDetail(order,detail)" class="btn btn-danger">-</button></td>
                 
             	</tr>
             	<tr>
-	            	<td><input type="text" ng-model="order.newProductId" />
+	            	<td><input class="form-control input-sm" type="text" ng-model="order.newProductId" />
 	            	</td>
-	            	<td><input type="number" ng-model="order.newQuantity" />
+	            	<td><input class="form-control input-sm" type="number" ng-model="order.newQuantity" />
 	            	</td>
 	            	<td><button ng-click="addDetail(order,order.newProductId,order.newQuantity)" class="btn btn-primary">+</button>	            	
 	            	</td>
@@ -195,8 +196,8 @@
         </div>
         <hr />
 
-        Contact: <input type="text" ng-model="contact" "/>
-        DeliveryAddress: <input type="text" ng-model="deliveryAddress" "/>
+        Contact: <input class="form-control" type="text" ng-model="contact" "/>
+        DeliveryAddress: <input class="form-control" type="text" ng-model="deliveryAddress" "/>
             <button ng-click="addOrder(contact,deliveryAddress)" class="btn btn-primary">Add order</button>
 
 			<hr/>
