@@ -1,0 +1,164 @@
+<!doctype html>
+<html ng-app>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.js"></script>
+      <script>
+          function guid() {
+              function _p8(s) {
+                  var p = (Math.random().toString(16)+"000000000").substr(2,8);
+                  return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
+              }
+              return _p8() + _p8(true) + _p8(true) + _p8();
+          }
+          
+              angular.module("foo", [])
+              function xx($scope) {
+
+                  //setup demo data
+                  $scope.orders = [{
+                      Id: guid(),
+                      contact: "rogeralsing@gmail.com",
+                      deliveryAddress: "123 foo street",
+                      details: [
+                          {
+                              Id: guid(),
+                              productId: "banana",
+                              quantity: 10
+                          },
+                          {
+                              Id: guid(),
+                              productId: "apple",
+                              quantity: 5
+                          }
+                      ]
+                  },
+                  {
+                      Id: guid(),
+                      contact: "rogeralsing@gmail.com",
+                      deliveryAddress: "123 foo street",
+                      details: []
+                  }];
+
+                  //event buffer
+                  var eventBuffer = [];
+                  $scope.events = eventBuffer;
+
+                  $scope.raise = function (event) {
+                      eventBuffer.push(event);
+                      console.log(event);
+                  }
+
+                  //
+                  $scope.addDetail = function (order, productId,quantity) {
+                      var detail = {
+                          Id: guid(),
+                          productId: productId,
+                          quantity: quantity
+                      };
+
+                      order.details.push(detail);                      
+
+                      $scope.raise({
+                          event: "detailAdded",
+                          orderId: order.Id,
+                          detailId: detail.Id,
+                          productId: productId,
+                          quantity: quantity,
+                      });
+                  }
+
+                  $scope.detailQuantityChange = function (order,detail) {
+                      $scope.raise({
+                          event: "detailQuantityChanged",
+                          orderId: order.Id,
+                          detailId: detail.Id,
+                          quantity: detail.quantity,
+                          
+                     });
+                  }
+
+                  $scope.deleteDetail = function (order,detail) {
+                      var index = order.details.indexOf(detail);
+                      order.details.splice(index, 1);
+
+                    $scope.raise({
+                        event: "detailDeleted",
+                        orderId: order.Id,
+                        detailId: detail.Id,
+                    });
+                  }
+
+                  $scope.contactChanged = function (order) {
+                      $scope.raise({
+                          event: "orderContactChanged",
+                          contact: order.contact,
+                      });
+                  }
+
+                  $scope.deliveryAddressChanged = function (order) {
+                      $scope.raise({
+                          event: "orderDeliveryaAddressChanged",
+                          deliveryAddress: order.deliveryAddress,
+                      });
+                  }
+
+                  $scope.addOrder = function (contact, deliveryAddress) {
+                      var order = {
+                          Id: guid(),
+                          contact: contact,
+                          deliveryAddress: deliveryAddress,
+                      }
+
+                      $scope.orders.push(order);
+
+                      $scope.raise({
+                          event: "orderAddred",
+                          orderId: order.Id,
+                          contact: order.contact,
+                          deliveryAddress: order.deliveryAddress,
+                      });
+                  }
+
+                  $scope.deleteOrder = function (order) {
+                      var index = $scope.orders.indexOf(order);
+                      $scope.orders.splice(index, 1);
+
+                      $scope.raise({
+                          event: "orderDeleted",
+                          orderId: order.Id,
+                      });
+                  }
+              };
+          
+      </script>
+  </head>
+  <body ng-app="foo">
+    <div ng-controller="xx">
+
+        <div ng-repeat="order in orders">
+
+            Contact: <input type="text" ng-model="order.contact" ng-blur="contactChanged(order)"/>
+            DeliveryAddress: <input type="text" ng-model="order.deliveryAddress" ng-blur="deliveryAddressChanged(order)"/>
+            <button ng-click="deleteOrder(order)">Delete order</button>
+
+            <div ng-repeat="detail in order.details">
+                ProductId <span ng-bind="detail.productId"></span>
+                Quantity <input type="number" ng-model="detail.quantity" ng-blur="detailQuantityChange(order,detail)"/>
+                <button ng-click="deleteDetail(order,detail)">Delete detail</button>
+                
+            </div>
+            <br />
+                ProductId <input type="text" ng-model="order.newProductId" />
+                Quantity <input type="number" ng-model="order.newQuantity" />
+                <button ng-click="addDetail(order,order.newProductId,order.newQuantity)">Add detail</button>
+            <hr />
+        </div>
+        <hr />
+
+        Contact: <input type="text" ng-model="contact" "/>
+        DeliveryAddress: <input type="text" ng-model="deliveryAddress" "/>
+            <button ng-click="addOrder(contact,deliveryAddress)">Add order</button>
+
+    </div>
+  </body>   
+</html>
