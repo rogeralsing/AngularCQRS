@@ -1,15 +1,11 @@
 <!doctype html>
 <html ng-app='foo'>
   <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.js"></script>
+  	<link rel="stylesheet" href="scripts/vendor/bootstrap/dist/css/bootstrap.css">
+    <script src="scripts/vendor/angular/angular.js"></script>
+    <script src="scripts/vendor/ui_guid_generator/dist/ui-guid-generator.js"></script>
       <script>
-          function guid() {
-              function _p8(s) {
-                  var p = (Math.random().toString(16)+"000000000").substr(2,8);
-                  return s ? "-" + p.substr(0,4) + "-" + p.substr(4,4) : p ;
-              }
-              return _p8() + _p8(true) + _p8(true) + _p8();
-          }
+          	var guid = ui_guid_generator;
           
             var app = angular.module('foo', []);
 
@@ -35,7 +31,6 @@
 			                    if (newValue != oldValue){
 			                    	scope.$eval(expressionToCall);
 			                    }
-			                    	//alert('changed ' + oldValue);
 			                });         
 			            });
 			        }
@@ -167,28 +162,42 @@
     <div ng-controller="xx">
 
         <div ng-repeat="order in orders">
+        	<h2>Order: {{order.Id}}</h2>
+        	<h3>Header</h3>
 
             Contact: <input type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
             DeliveryAddress: <input type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
-            <button ng-click="deleteOrder(order)">Delete order</button>
+            <button ng-click="deleteOrder(order)" class="btn btn-primary">Delete order</button>
 
-            <div ng-repeat="detail in order.details">
-                ProductId <span ng-bind="detail.productId"></span>
-                Quantity <input type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/>
-                <button ng-click="deleteDetail(order,detail)">Delete detail</button>
+			<h3>Details</h3>
+			<table class="">
+			<tr>
+			<th>ProductId
+			</th>
+			<th>Quantity
+			</th>
+			</tr>
+            	<tr ng-repeat="detail in order.details">
+                 	<td>{{detail.productId}}</td>
+                 	<td><input type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/></td>
+                	<td><button ng-click="deleteDetail(order,detail)" class="btn btn-danger">-</button></td>
                 
-            </div>
-            <br />
-                ProductId <input type="text" ng-model="order.newProductId" />
-                Quantity <input type="number" ng-model="order.newQuantity" />
-                <button ng-click="addDetail(order,order.newProductId,order.newQuantity)">Add detail</button>
-            <hr />
+            	</tr>
+            	<tr>
+	            	<td><input type="text" ng-model="order.newProductId" />
+	            	</td>
+	            	<td><input type="number" ng-model="order.newQuantity" />
+	            	</td>
+	            	<td><button ng-click="addDetail(order,order.newProductId,order.newQuantity)" class="btn btn-primary">+</button>	            	
+	            	</td>
+            	</tr>
+            </table>
         </div>
         <hr />
 
         Contact: <input type="text" ng-model="contact" "/>
         DeliveryAddress: <input type="text" ng-model="deliveryAddress" "/>
-            <button ng-click="addOrder(contact,deliveryAddress)">Add order</button>
+            <button ng-click="addOrder(contact,deliveryAddress)" class="btn btn-primary">Add order</button>
 
 			<hr/>
 			events: {{events}}
