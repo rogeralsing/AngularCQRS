@@ -159,18 +159,25 @@
       </script>
   </head>
   <body >
-    <div ng-controller="xx">
+    <div class="container" ng-controller="xx">
+    	<h1>AngularJS - CQRS Experiment</h1>
 
         <div ng-repeat="order in orders">
-        	<h2>Order: {{order.Id}}</h2>
+        	<h2>Order: {{order.Id}} <button ng-click="deleteOrder(order)" class="btn btn-danger">-</button></h2> 
         	<h3>Header</h3>
 
-            Contact: <input class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
-            DeliveryAddress: <input class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
-            <button ng-click="deleteOrder(order)" class="btn btn-primary">Delete order</button>
+			<div class="form-group">
+    			<label for="contactInput">Contact:</label>
+            	<input id="contactInput" class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+            </div>
+
+			<div class="form-group">
+				<label for="deliveryAddressInput">Delivery Address:</label>
+            	<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
+            </div>
 
 			<h3>Details</h3>
-			<table class="table table-condensed table-striped">
+			<table class="table table-condensed table-bordered">
 			<tr>
 			<th>ProductId
 			</th>
