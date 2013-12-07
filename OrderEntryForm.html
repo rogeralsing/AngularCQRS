@@ -12,20 +12,30 @@
           }
           
             var app = angular.module('foo', []);
-            console.log(app);
 
-            app.directive('ngModelOnblur', function() {
+            app.directive('ngChangeOnBlur', function() {
 			    return {
 			        restrict: 'A',
 			        require: 'ngModel',
-			        link: function(scope, elm, attr, ngModelCtrl) {
-			        	console.log(elm);
-			            if (attr.type === 'radio' || attr.type === 'checkbox') return;
+			        link: function(scope, elm, attrs, ngModelCtrl) {
+			            if (attrs.type === 'radio' || attrs.type === 'checkbox') 
+			            	return;
 			            
-			            elm.unbind('input').unbind('keydown').unbind('change');
+			            var expressionToCall = attrs.ngChangeOnBlur;
+
+			            var oldValue = null;
+			            elm.bind('focus',function() {
+			            	scope.$apply(function() {
+			            		oldValue = elm.val();
+			            	});
+			            })
 			            elm.bind('blur', function() {
 			                scope.$apply(function() {
-			                    ngModelCtrl.$setViewValue(elm.val());
+			                    var newValue = elm.val();
+			                    if (newValue != oldValue){
+			                    	scope.$eval(expressionToCall);
+			                    }
+			                    	//alert('changed ' + oldValue);
 			                });         
 			            });
 			        }
@@ -158,13 +168,13 @@
 
         <div ng-repeat="order in orders">
 
-            Contact: <input type="text" ng-model="order.contact" ng-model-onblur ng-change="contactChanged(order)"/>
-            DeliveryAddress: <input type="text" ng-model="order.deliveryAddress" ng-model-onblur ng-change="deliveryAddressChanged(order)"/>
+            Contact: <input type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+            DeliveryAddress: <input type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
             <button ng-click="deleteOrder(order)">Delete order</button>
 
             <div ng-repeat="detail in order.details">
                 ProductId <span ng-bind="detail.productId"></span>
-                Quantity <input type="number" ng-model="detail.quantity" ng-model-onblur ng-change="detailQuantityChange(order,detail)"/>
+                Quantity <input type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/>
                 <button ng-click="deleteDetail(order,detail)">Delete detail</button>
                 
             </div>
@@ -180,6 +190,11 @@
         DeliveryAddress: <input type="text" ng-model="deliveryAddress" "/>
             <button ng-click="addOrder(contact,deliveryAddress)">Add order</button>
 
+			<hr/>
+			events: {{events}}
+
+
     </div>
+
   </body>   
 </html>
