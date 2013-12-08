@@ -1,67 +1,67 @@
 <!doctype html>
 <html ng-app='foo'>
-  <head>
-  	<link rel="stylesheet" href="scripts/vendor/bootstrap/dist/css/bootstrap.css">
-    <script src="scripts/vendor/angular/angular.js"></script>
-    <script src="scripts/vendor/ui_guid_generator/dist/ui-guid-generator.js"></script>
-      <script>
-          	var guid = ui_guid_generator;
-          
-            var app = angular.module('foo', []);
+<head>
+	<link rel="stylesheet" href="scripts/vendor/bootstrap/dist/css/bootstrap.css">
+	<script src="scripts/vendor/angular/angular.js"></script>
+	<script src="scripts/vendor/ui_guid_generator/dist/ui-guid-generator.js"></script>
+	<script>
+		var guid = ui_guid_generator;
 
-            app.directive('ngChangeOnBlur', function() {
-			    return {
-			        restrict: 'A',
-			        require: 'ngModel',
-			        link: function(scope, elm, attrs, ngModelCtrl) {
-			            if (attrs.type === 'radio' || attrs.type === 'checkbox') 
-			            	return;
-			            
-			            var expressionToCall = attrs.ngChangeOnBlur;
+		var app = angular.module('foo', []);
 
-			            var oldValue = null;
-			            elm.bind('focus',function() {
-			            	scope.$apply(function() {
-			            		oldValue = elm.val();
-			            	});
-			            })
-			            elm.bind('blur', function() {
-			                scope.$apply(function() {
-			                    var newValue = elm.val();
-			                    if (newValue != oldValue){
-			                    	scope.$eval(expressionToCall);
-			                    }
-			                });         
-			            });
-			        }
-			    };
-			});
+		app.directive('ngChangeOnBlur', function() {
+			return {
+				restrict: 'A',
+				require: 'ngModel',
+				link: function(scope, elm, attrs, ngModelCtrl) {
+					if (attrs.type === 'radio' || attrs.type === 'checkbox') 
+						return;
 
-			app.controller('xx', ['$scope',function xx($scope) {
+					var expressionToCall = attrs.ngChangeOnBlur;
+
+					var oldValue = null;
+					elm.bind('focus',function() {
+						scope.$apply(function() {
+							oldValue = elm.val();
+						});
+					})
+					elm.bind('blur', function() {
+						scope.$apply(function() {
+							var newValue = elm.val();
+							if (newValue != oldValue){
+								scope.$eval(expressionToCall);
+							}
+						});         
+					});
+				}
+			};
+		});
+
+		app.controller('xx', ['$scope',function xx($scope) {
 
                   //setup demo data
                   $scope.orders = [{
-                      Id: guid(),
-                      contact: "rogeralsing@gmail.com",
-                      deliveryAddress: "123 foo street",
-                      details: [
-                          {
-                              Id: guid(),
-                              productId: "banana",
-                              quantity: 10
-                          },
-                          {
-                              Id: guid(),
-                              productId: "apple",
-                              quantity: 5
-                          }
-                      ]
+                  	Id: guid(),
+                  	contact: "rogeralsing@gmail.com",
+                  	deliveryAddress: "123 foo street",
+                  	details: [
+                  	{
+                  		Id: guid(),
+                  		productId: "banana",
+                  		quantity: 10
+                  	},
+                  	{
+                  		Id: guid(),
+                  		productId: "apple",
+                  		quantity: 5
+                  	}
+                  	]
                   },
                   {
-                      Id: guid(),
-                      contact: "rogeralsing@gmail.com",
-                      deliveryAddress: "123 foo street",
-                      details: []
+                  	Id: guid(),
+                  	contact: "rogeralsing@gmail.com",
+                  	deliveryAddress: "123 foo street",
+                  	details: []
                   }];
 
                   //event buffer
@@ -69,157 +69,181 @@
                   $scope.events = eventBuffer;
 
                   $scope.raise = function (event) {
-                      eventBuffer.push(event);
-                      console.log(event);
+                  	eventBuffer.push(event);
+                  	console.log(event);
                   }
 
                   //
                   $scope.addDetail = function (order, productId,quantity) {
-                      var detail = {
-                          Id: guid(),
-                          productId: productId,
-                          quantity: quantity
-                      };
+                  	var detail = {
+                  		Id: guid(),
+                  		productId: productId,
+                  		quantity: quantity
+                  	};
 
-                      order.details.push(detail);                      
+                  	order.details.push(detail);                      
 
-                      $scope.raise({
-                          event: "detailAdded",
-                          orderId: order.Id,
-                          detailId: detail.Id,
-                          productId: productId,
-                          quantity: quantity,
-                      });
+                  	$scope.raise({
+                  		event: "detailAdded",
+                  		orderId: order.Id,
+                  		detailId: detail.Id,
+                  		productId: productId,
+                  		quantity: quantity,
+                  	});
                   }
 
                   $scope.detailQuantityChange = function (order,detail) {
-                      $scope.raise({
-                          event: "detailQuantityChanged",
-                          orderId: order.Id,
-                          detailId: detail.Id,
-                          quantity: detail.quantity,
-                          
-                     });
+                  	$scope.raise({
+                  		event: "detailQuantityChanged",
+                  		orderId: order.Id,
+                  		detailId: detail.Id,
+                  		quantity: detail.quantity,
+
+                  	});
                   }
 
                   $scope.deleteDetail = function (order,detail) {
-                      var index = order.details.indexOf(detail);
-                      order.details.splice(index, 1);
+                  	var index = order.details.indexOf(detail);
+                  	order.details.splice(index, 1);
 
-                    $scope.raise({
-                        event: "detailDeleted",
-                        orderId: order.Id,
-                        detailId: detail.Id,
-                    });
+                  	$scope.raise({
+                  		event: "detailDeleted",
+                  		orderId: order.Id,
+                  		detailId: detail.Id,
+                  	});
                   }
 
                   $scope.contactChanged = function (order) {
-                      $scope.raise({
-                          event: "orderContactChanged",
-                          contact: order.contact,
-                      });
+                  	$scope.raise({
+                  		event: "orderContactChanged",
+                  		contact: order.contact,
+                  	});
                   }
 
                   $scope.deliveryAddressChanged = function (order) {
-                      $scope.raise({
-                          event: "orderDeliveryaAddressChanged",
-                          deliveryAddress: order.deliveryAddress,
-                      });
+                  	$scope.raise({
+                  		event: "orderDeliveryaAddressChanged",
+                  		deliveryAddress: order.deliveryAddress,
+                  	});
                   }
 
                   $scope.addOrder = function (contact, deliveryAddress) {
-                      var order = {
-                          Id: guid(),
-                          contact: contact,
-                          deliveryAddress: deliveryAddress,
-                          details: []
-                      }
+                  	var order = {
+                  		Id: guid(),
+                  		contact: contact,
+                  		deliveryAddress: deliveryAddress,
+                  		details: []
+                  	}
 
-                      $scope.orders.push(order);
+                  	$scope.orders.push(order);
 
-                      $scope.raise({
-                          event: "orderAddred",
-                          orderId: order.Id,
-                          contact: order.contact,
-                          deliveryAddress: order.deliveryAddress,
-                      });
+                  	$scope.raise({
+                  		event: "orderAddred",
+                  		orderId: order.Id,
+                  		contact: order.contact,
+                  		deliveryAddress: order.deliveryAddress,
+                  	});
                   }
 
                   $scope.deleteOrder = function (order) {
-                      var index = $scope.orders.indexOf(order);
-                      $scope.orders.splice(index, 1);
+                  	var index = $scope.orders.indexOf(order);
+                  	$scope.orders.splice(index, 1);
 
-                      $scope.raise({
-                          event: "orderDeleted",
-                          orderId: order.Id,
-                      });
+                  	$scope.raise({
+                  		event: "orderDeleted",
+                  		orderId: order.Id,
+                  	});
                   }
               }]);
-          
-      </script>
-  </head>
-  <body >
-    <div class="container" ng-controller="xx">
-    	<h1>AngularJS - CQRS Experiment</h1>
 
-        <div ng-repeat="order in orders" class="panel panel-info">
+</script>
+</head>
+<body >
+	<div class="container" ng-controller="xx">
+		<h1>AngularJS - CQRS Experiment</h1>
 
-        	<div class="panel-heading">Order: {{order.Id}} <button ng-click="deleteOrder(order)" class="btn btn-danger">-</button></div>
+		<div ng-repeat="order in orders" class="panel panel-info">
+
+			<div class="panel-heading">Order: {{order.Id}} <button ng-click="deleteOrder(order)" class="btn btn-danger">-</button></div>
 
 			<div class="panel-body">
 
-			<form class="form-horizontal" role="form">
-			<div class="form-group">
-    			<label class="col-sm-2 control-label" for="contactInput">Contact:</label>
-    			<div class="col-sm-5">
-            		<input id="contactInput" class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
-            	</div>
-            </div>
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="contactInput">Contact:</label>
+						<div class="col-sm-5">
+							<input id="contactInput" class="form-control input-sm" type="text" ng-model="order.contact" ng-change-on-blur="contactChanged(order)"/>
+						</div>
+					</div>
 
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="deliveryAddressInput">Delivery Address:</label>
-				<div class="col-sm-5">
-            		<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
-            	</div>
-            </div>
-            </form>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="deliveryAddressInput">Delivery Address:</label>
+						<div class="col-sm-5">
+							<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="order.deliveryAddress" ng-change-on-blur="deliveryAddressChanged(order)"/>
+						</div>
+					</div>
+				</form>
 			</div>
 			<table class="table table-condensed table-bordered">
-			<tr>
-			<th>ProductId
-			</th>
-			<th>Quantity
-			</th>
-			<th></th>
-			</tr>
-            	<tr ng-repeat="detail in order.details">
-                 	<td>{{detail.productId}}</td>
-                 	<td><input class="form-control input-sm" type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/></td>
-                	<td><button ng-click="deleteDetail(order,detail)" class="btn btn-danger">-</button></td>
-                
-            	</tr>
-            	<tr>
-	            	<td><input class="form-control input-sm" type="text" ng-model="order.newProductId" />
-	            	</td>
-	            	<td><input class="form-control input-sm" type="number" ng-model="order.newQuantity" />
-	            	</td>
-	            	<td><button ng-click="addDetail(order,order.newProductId,order.newQuantity)" class="btn btn-primary">+</button>	            	
-	            	</td>
-            	</tr>
-            </table>
-            
-        </div>
-        <hr />
+				<tr>
+					<th>ProductId
+					</th>
+					<th>Quantity
+					</th>
+					<th></th>
+				</tr>
+				<tr ng-repeat="detail in order.details">
+					<td>{{detail.productId}}</td>
+					<td><input class="form-control input-sm" type="number" ng-model="detail.quantity" ng-change-on-blur="detailQuantityChange(order,detail)"/></td>
+					<td><button ng-click="deleteDetail(order,detail)" class="btn btn-danger">-</button></td>
 
-        Contact: <input class="form-control" type="text" ng-model="contact" "/>
-        DeliveryAddress: <input class="form-control" type="text" ng-model="deliveryAddress" "/>
-            <button ng-click="addOrder(contact,deliveryAddress)" class="btn btn-primary">Add order</button>
+				</tr>
+				<tr>
+					<td><input class="form-control input-sm" type="text" ng-model="order.newProductId" />
+					</td>
+					<td><input class="form-control input-sm" type="number" ng-model="order.newQuantity" />
+					</td>
+					<td><button ng-click="addDetail(order,order.newProductId,order.newQuantity)" class="btn btn-primary">+</button>	            	
+					</td>
+				</tr>
+			</table>
 
-			<hr/>
-			events: {{events}}
+		</div>
 
+	<div class="panel panel-info">
+		<div class="panel-heading">Add new order </div>
+		<div class="panel-body">
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="contactInput">Contact:</label>
+					<div class="col-sm-5">
+						<input id="contactInput" class="form-control input-sm" type="text" ng-model="contact" />
+					</div>
+				</div>
 
-    </div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="deliveryAddressInput">Delivery Address:</label>
+					<div class="col-sm-5">
+						<input id="deliveryAddressInput" class="form-control input-sm" type="text" ng-model="deliveryAddress" />
+					</div>
+				</div>
 
-  </body>   
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for=""></label>
+					<div class="col-sm-5">
+						<button ng-click="addOrder(contact,deliveryAddress)" class="btn btn-primary">Add order</button>
+					</div>
+				</div>
+			</form>
+
+			
+
+		</div>
+	</div>
+
+	events: {{events}}
+
+</div>
+
+</body>   
 </html>
